@@ -182,7 +182,7 @@ helpers.findNearestUnownedDiamondMine = function(gameData) {
   });
 
   //Return the direction that needs to be taken to achieve the goal
-  return pathInfoObject.direction;
+  return pathInfoObject;
 };
 
 // Returns the nearest health well or false, if there are no health wells

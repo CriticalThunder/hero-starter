@@ -56,7 +56,7 @@ var moves = {
   // Health Nut
   healthNut:  function(gameData, helpers) {
     // Here, we ask if your hero's health is below 75
-    if (gameData.activeHero.health <= 75){
+    if (gameData.activeHero.health <= 40){
       // If it is, head towards the nearest health well
       return helpers.findNearestHealthWell(gameData);
     } else {
@@ -176,11 +176,60 @@ var moves = {
   // This hero will try really hard not to die.
   coward : function(gameData, helpers) {
     return helpers.findNearestHealthWell(gameData);
-  }
- };
+  },
+   // The "Violent Miner"
+  // This hero will try really hard not to die.
+  violentMiner : function(gameData, helpers) {
+    var myHero = gameData.activeHero;
+	var dmstats = helpers.findNearestUnownedDiamondMine(gameData);
+	    //Get stats on the nearest health well
+    var healthWellStats = helpers.findNearestObjectDirectionAndDistance(gameData.board, myHero, function(boardTile) {
+      if (boardTile.type === 'HealthWell') {
+        return true;
+      }
+    });
+
+    var distanceToHealthWell = healthWellStats.distance;
+    var directionToHealthWell = healthWellStats.direction;
+	
+	var dmines = helpers.findNearestObjectDirectionAndDistance(gameData.board, myHero, function(boardTile) {
+    if (mineTile.type === 'DiamondMine') {
+      if (mineTile.owner) {
+        return mineTile.owner.team !== hero.team;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+    });
+
+    var distanceToDiamondMine = dmstats.distance;
+    var directionToDiamondMine = dmstats.direction;
+	  var nearestEnemyStats = helpers.findNearestObjectDirectionAndDistance(gameData.board, myHero, function(enemyTile) {
+    return enemyTile.type === 'Hero' && enemyTile.team !== hero.team && enemyTile.health <= hero.health;
+  });
+      var distanceToNearestEnemy = nearestEnemyStats.distance;
+    var directionToNearestEnemy = nearestEnemyStats.direction;
+	    if (myHero.health < 40) {
+      //Heal no matter what if low health
+      return directionToHealthWell;
+    } else if (myHero.health < 100 && distanceToHealthWell === 3) {
+      //Heal if you aren't full health and are close to a health well already
+      return directionToHealthWell;
+    } else {
+	console.log ("diamondMine", dmstats);
+	console.log ("nearestEnemy", directionToNearestEnemy);
+	  if (dmines < directionToNearestEnemy) {
+	  return dmines;
+	  }
+	  else {return directionToNearestEnemy;
+	  }
+    }
+ }};
 
 //  Set our heros strategy
-var  move =  moves.aggressor;
+var  move =  moves.violentMiner;
 
 // Export the move function here
 module.exports = move;
