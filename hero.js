@@ -195,7 +195,7 @@ var moves = {
 	var dmines = helpers.findNearestObjectDirectionAndDistance(gameData.board, myHero, function(boardTile) {
     if (mineTile.type === 'DiamondMine') {
       if (mineTile.owner) {
-        return mineTile.owner.team !== hero.team;
+        return mineTile.owner.team !== myHero.team;
       } else {
         return true;
       }
@@ -207,11 +207,11 @@ var moves = {
     var distanceToDiamondMine = dmstats.distance;
     var directionToDiamondMine = dmstats.direction;
 	  var nearestEnemyStats = helpers.findNearestObjectDirectionAndDistance(gameData.board, myHero, function(enemyTile) {
-    return enemyTile.type === 'Hero' && enemyTile.team !== hero.team && enemyTile.health <= hero.health;
+    return enemyTile.type === 'Hero' && enemyTile.team !== myHero.team && enemyTile.health <= myHero.health;
   });
       var distanceToNearestEnemy = nearestEnemyStats.distance;
     var directionToNearestEnemy = nearestEnemyStats.direction;
-	    if (myHero.health < 40) {
+	    if (myHero.health < 60) {
       //Heal no matter what if low health
       return directionToHealthWell;
     } else if (myHero.health < 100 && distanceToHealthWell === 3) {
